@@ -47,6 +47,12 @@ def run_inversion(task_id:int,worker_id:str=Query(...,min_length=1)):
     except KeyError as exc: raise HTTPException(404,"任务不存在") from exc
     except ValueError as exc: raise HTTPException(422,str(exc)) from exc
 
+@router.get("/inversions/{task_id}")
+def get_inversion(task_id:int):
+    value=service().get_inversion(task_id)
+    if value is None: raise HTTPException(404,"任务不存在")
+    return value
+
 @router.post("/wells/{well_id}/transport",status_code=201)
 def run_transport(well_id:int,payload:TransportRequest):
     try: return service().run_transport(well_id,payload.model_dump())
