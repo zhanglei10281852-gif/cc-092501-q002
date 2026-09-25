@@ -41,6 +41,12 @@ def enqueue_inversion(sample_id:int,payload:InversionRequest):
     except KeyError as exc: raise HTTPException(404,"样本不存在") from exc
     except ValueError as exc: raise HTTPException(422,str(exc)) from exc
 
+@router.get("/inversions/{task_id}")
+def get_inversion(task_id:int):
+    value=service().get_inversion(task_id)
+    if value is None: raise HTTPException(404,"任务不存在")
+    return value
+
 @router.post("/inversions/{task_id}/run")
 def run_inversion(task_id:int,worker_id:str=Query(...,min_length=1)):
     try: return service().run_inversion(task_id,worker_id)
